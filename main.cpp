@@ -52,6 +52,9 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
                case VK_ESCAPE:
                   ExitProcess(0);
                   break;
+               case VK_F4:
+                  soundIndices.push_back(0);
+                  break;
             }
          }
          break;
@@ -101,8 +104,6 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 // int main()
 {
 
-
-
 #pragma region setup
    vector<RAWINPUTDEVICE> devices = {
        {
@@ -120,7 +121,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    });
 
    auto hwnd = CreateWindow("Game", "Game",
-                           //  WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
+                            //  WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
                             WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
                             null, null, null, null);
 

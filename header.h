@@ -19,10 +19,10 @@
 #include <map>
 #include <numbers>
 #include <print>
-#include <set>
-#include <vector>
-#include <thread>
 #include <random>
+#include <set>
+#include <thread>
+#include <vector>
 #pragma endregion
 
 #undef near
@@ -442,7 +442,10 @@ struct cb
    }
 };
 
-auto audio = thread([] {
+vector<int> soundIndices;
+
+auto audio = thread([]
+                    {
    int sampleRate = 48000;
    CoInitializeEx(null, 0);
 
@@ -496,18 +499,28 @@ auto audio = thread([] {
          render->GetBuffer(n, (u8**) &data);
 
          range (i, n) {
-            // data[i * 2] = data[i * 2 + 1] = clamp(5 * sine[idx], -1.0f, 1.0f);
-            // data[i * 2] = data[i * 2 + 1] = 5 * sine[idx];
-            data[i * 2] = data[i * 2 + 1] = rand(eng); // random noise
-            // data[i * 2] = data[i * 2 + 1] = sine[idx];
+            data[i*2] = data[i*2+1] = 0;
+            for(int j = 0; j < soundIndices.size(); j++) {
+               if(soundIndices[j] < sine.size()) {
+                  data[i*2] += sine[soundIndices[j]];
+                  data[i*2 + 1] += sine[soundIndices[j]];
+                  soundIndices[j]++;
+               }
+            }
 
-            // data[i * 2] = sound[idx];
-            // data[i * 2 + 1] = sound[idx + 1];
+            // data[i*2] = clamp(data[i*2], -1.0f, 1.0f);
+            // data[i*2+1] = clamp(data[i*2+1], -1.0f, 1.0f);
 
-            idx = (idx + 1) % sine.size();
+            int j = 0;
+            while(j < soundIndices.size()) {
+               if(soundIndices[j] == sine.size()) {
+                  soundIndices.erase(soundIndices.begin()+j);
+               }else {
+                  j++;
+               }
+            }
          }
 
          render->ReleaseBuffer(n, 0);
       }
-   }
-});
+   } });
