@@ -442,8 +442,8 @@ struct cb
    }
 };
 
-thread audio([] {
-   int sample_rate = 48000;
+auto audio = thread([] {
+   int sampleRate = 48000;
    CoInitializeEx(null, 0);
 
    ComPtr<IMMDeviceEnumerator> mm;
@@ -457,15 +457,15 @@ thread audio([] {
                       &WAVEFORMATEX{
                          .wFormatTag = WAVE_FORMAT_IEEE_FLOAT,
                          .nChannels = 2,
-                         .nSamplesPerSec = u32(sample_rate),
-                         .nAvgBytesPerSec = u32(sample_rate * 2 * sizeof(float)),
+                         .nSamplesPerSec = u32(sampleRate),
+                         .nAvgBytesPerSec = u32(sampleRate * 2 * sizeof(float)),
                          .nBlockAlign = 2 * sizeof(float),
                          .wBitsPerSample = 8 * sizeof(float),
                       },
                       null);
 
-   u32 buffer_size;
-   client->GetBufferSize(&buffer_size);
+   u32 bufferSize;
+   client->GetBufferSize(&bufferSize);
    ComPtr<IAudioRenderClient> render;
    client->GetService(IID_PPV_ARGS(&render));
 
@@ -478,9 +478,9 @@ thread audio([] {
    default_random_engine eng;
    auto rand = uniform_real_distribution<float>(-1, 1);
 
-   auto sine = vector<float>(sample_rate);
-   range (i, sample_rate) {
-      sine[i] = sin(440 * 2 * pi * i / sample_rate);
+   auto sine = vector<float>(sampleRate);
+   range (i, sampleRate) {
+      sine[i] = sin(440 * 2 * pi * i / sampleRate);
    }
 
    int idx = 0;
@@ -490,7 +490,7 @@ thread audio([] {
       if (res == 0) {
          u32 padding;
          client->GetCurrentPadding(&padding);
-         int n = buffer_size - padding;
+         int n = bufferSize - padding;
          
          float* data;
          render->GetBuffer(n, (u8**) &data);
