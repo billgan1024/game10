@@ -402,6 +402,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    // ShowCursor(false);
    while (true)
    {
+      // https://github.com/microsoft/DirectX-SDK-Samples/blob/main/C%2B%2B/Direct3D11/Tutorials/Tutorial01/Tutorial01.cpp
       MSG msg;
       while (PeekMessage(&msg, null, 0, 0, PM_REMOVE))
       {

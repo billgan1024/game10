@@ -444,6 +444,7 @@ struct cb
 
 vector<int> soundIndices;
 
+// use another thread otherwise main thread will become slower
 auto audio = thread([]
                     {
    int sampleRate = 48000;
@@ -486,7 +487,7 @@ auto audio = thread([]
       sine[i] = sin(440 * 2 * pi * i / sampleRate);
    }
 
-   int idx = 0;
+
    while (true) {
       int res = WaitForSingleObject(ready, INFINITE);
 
@@ -499,26 +500,23 @@ auto audio = thread([]
          render->GetBuffer(n, (u8**) &data);
 
          range (i, n) {
-            data[i*2] = data[i*2+1] = 0;
+            data[2*i] = data[2*i+1] = 0;
             for(int j = 0; j < soundIndices.size(); j++) {
                if(soundIndices[j] < sine.size()) {
-                  data[i*2] += sine[soundIndices[j]];
-                  data[i*2 + 1] += sine[soundIndices[j]];
+                  data[2*i] += sine[soundIndices[j]];
+                  data[2*i + 1] += sine[soundIndices[j]];
                   soundIndices[j]++;
                }
             }
 
-            // data[i*2] = clamp(data[i*2], -1.0f, 1.0f);
-            // data[i*2+1] = clamp(data[i*2+1], -1.0f, 1.0f);
+            // data[2*i] = clamp(data[2*i], -1.0f, 1.0f);
+            // data[2*i+1] = clamp(data[2*i+1], -1.0f, 1.0f);
 
-            int j = 0;
-            while(j < soundIndices.size()) {
-               if(soundIndices[j] == sine.size()) {
-                  soundIndices.erase(soundIndices.begin()+j);
-               }else {
-                  j++;
-               }
+            vector<int> newIndices;
+            for(int j = 0; j < soundIndices.size(); j++) {
+               if(soundIndices[j] < sine.size()) newIndices.push_back(soundIndices[j]);
             }
+            soundIndices = newIndices;
          }
 
          render->ReleaseBuffer(n, 0);

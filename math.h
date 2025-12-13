@@ -15,7 +15,7 @@ struct vec
    }
    void operator-=(vec other)
    {
-      *this = *this + other;
+      *this = *this - other;
    }
 };
 
