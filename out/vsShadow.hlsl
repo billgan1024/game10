@@ -9,37 +9,37 @@
 #endif
 
 
-#line 56 "shaders.hlsl"
+#line 55 "shaders.hlsl"
 StructuredBuffer<float3 > entryPointParams_points_0 : register(t0);
 
 
-#line 56
+#line 55
 cbuffer entryPointParams_model_0 : register(b0)
 {
     float4x4 entryPointParams_model_0;
 }
 
-#line 56
+#line 55
 cbuffer entryPointParams_cascade_0 : register(b1)
 {
     float4x4 entryPointParams_cascade_0;
 }
 
-#line 18
+#line 17
 float4x4 x2A_0(float4x4 a_0, float4x4 b_0)
 {
     return mul(a_0, b_0);
 }
 
 
-#line 14
+#line 13
 float4 x2A_1(float4x4 m_0, float4 v_0)
 {
     return mul(m_0, v_0);
 }
 
 
-#line 56
+#line 55
 void vsShadow(uint id_0 : SV_VertexID, out float4 svp_0 : SV_Position)
 {
 

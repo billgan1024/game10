@@ -13,7 +13,7 @@
 Texture2D<float4 > entryPointParams_diffuse_0 : register(t0);
 
 
-#line 139 "shaders.hlsl"
+#line 138 "shaders.hlsl"
 Texture2D<float >  entryPointParams_shadow_0[int(4)] : register(t1);
 
 
@@ -55,84 +55,84 @@ cbuffer entryPointParams_cascade3_0 : register(b4)
     float4x4 entryPointParams_cascade3_0;
 }
 
-#line 14 "shaders.hlsl"
+#line 13 "shaders.hlsl"
 float4 x2A_0(float4x4 m_0, float4 v_0)
 {
     return mul(m_0, v_0);
 }
 
 
-#line 132
+#line 131
 bool inVolume_0(float3 ndc_0)
 {
 
-#line 132
+#line 131
     bool _S1;
 
     if((abs(ndc_0.x)) < 1.0f)
     {
 
-#line 134
+#line 133
         _S1 = (abs(ndc_0.y)) < 1.0f;
 
-#line 134
+#line 133
     }
     else
     {
 
-#line 134
+#line 133
         _S1 = false;
 
-#line 134
+#line 133
     }
 
-#line 134
+#line 133
     if(_S1)
     {
 
-#line 134
+#line 133
         _S1 = (ndc_0.z) > 0.0f;
 
-#line 134
+#line 133
     }
     else
     {
 
-#line 134
+#line 133
         _S1 = false;
 
-#line 134
+#line 133
     }
 
-#line 134
+#line 133
     if(_S1)
     {
 
-#line 134
+#line 133
         _S1 = (ndc_0.z) < 1.0f;
 
-#line 134
+#line 133
     }
     else
     {
 
-#line 134
+#line 133
         _S1 = false;
 
-#line 134
+#line 133
     }
 
-#line 134
+#line 133
     return _S1;
 }
 
 
-#line 126
+#line 125
 float2 ndc2uv_0(float2 ndc_1)
 {
     float2 _S2 = (ndc_1 + 1.0f) / 2.0f;
 
-#line 126
+#line 125
     float2 _S3 = _S2;
 
 
@@ -141,23 +141,23 @@ float2 ndc2uv_0(float2 ndc_1)
 }
 
 
-#line 139
+#line 138
 void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 : uv, float3 pos_0 : pos, out float4 target_0 : SV_Target)
 {
 
-#line 139
+#line 138
     float2 _S4 = uv_0;
 
-#line 139
+#line 138
     float3 _S5 = pos_0;
 
-#line 147
+#line 146
     float _S6 = dot(normalize(normal_0), entryPointParams_light_0);
 
-#line 147
+#line 146
     float lambert_0 = 0.75f * ((_S6 + 1.0f) / 2.0f) + 0.25f;
 
-#line 147
+#line 146
     float inLight_0;
 
 
@@ -165,18 +165,19 @@ void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 
     {
         float4 _S7 = float4(_S5, 1.0f);
 
-#line 152
+#line 151
         float3 ndc_2 = x2A_0(entryPointParams_cascade0_0, _S7).xyz;
         if(inVolume_0(ndc_2))
         {
 
-#line 153
+#line 152
             inLight_0 = entryPointParams_shadow_0[int(0)].SampleCmp(entryPointParams_cmp_0, ndc2uv_0(ndc_2.xy), ndc_2.z);
 
-#line 153
+#line 152
         }
         else
         {
+
 
             float3 ndc_3 = x2A_0(entryPointParams_cascade1_0, _S7).xyz;
             if(inVolume_0(ndc_3))
@@ -226,18 +227,18 @@ void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 
 #line 158
             }
 
-#line 153
+#line 152
         }
 
-#line 150
+#line 149
     }
     else
     {
 
-#line 150
+#line 149
         inLight_0 = 1.0f;
 
-#line 150
+#line 149
     }
 
 #line 174

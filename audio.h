@@ -1,8 +1,7 @@
 vector<int> soundIndices;
 
 // use another thread otherwise main thread will become slower
-// auto audio = thread([]
-void audioThread()
+void audioLoop()
 {
 
    int sampleRate = 48000;

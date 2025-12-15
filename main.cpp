@@ -104,7 +104,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 // int main()
 {
 
-   auto audio = thread(audioThread);
+   auto audioThread = thread(audioLoop);
 
 #pragma region setup
    vector<RAWINPUTDEVICE> devices = {
@@ -123,8 +123,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    });
 
    auto hwnd = CreateWindow("Game", "Game",
-                            //  WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
-                            WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
+                             WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
+                           //  WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
                             null, null, null, null);
 
    RECT rect;
@@ -454,7 +454,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             // test collisions against the inner ball. if we collide, then we resolve collision on the outer ball
             // this is to solve the fundamental problem with point-volume testing: it's ill conditioned on the boundary
             bool collided = false;
-            float t = 1;
+            float collisionTime = 1;
             vec3 normal;
 
             range (i, COUNT(scene, 2, indices) / 3)
@@ -473,15 +473,15 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                   if (c[0] > 0 && c[0] < 1 && c[1] > 0 && c[1] < 1 && c[0] + c[1] < 1)
                   {
                      collided = true;
-                     t = time;
+                     collisionTime = time;
                      normal = n;
                   }
                };
 
                // wlog you can draw the normal upwards. mind the signs to compute the point on the original plane
-               if (t1 > 0 && t1 < t)
+               if (t1 > 0 && t1 < collisionTime)
                   handleCollision(t1, t1 * distance + n * player.innerRadius);
-               if (t2 > 0 && t2 < t)
+               if (t2 > 0 && t2 < collisionTime)
                   handleCollision(t2, t2 * distance - n * player.innerRadius);
 
                auto handleCylinder = [&](vec3 p, vec3 q) { // infinite cylinder from p to q
@@ -505,15 +505,15 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                      if (signedDistance > 0 && signedDistance < len)
                      {
                         collided = true;
-                        t = time;
+                        collisionTime = time;
                         normal = normalize(pos - (p + a * signedDistance));
                      }
                   };
 
                   // any NAN/INF would be ignored
-                  if (t1 > 0 && t1 < t)
+                  if (t1 > 0 && t1 < collisionTime)
                      handleCollision(t1);
-                  if (t2 > 0 && t2 < t)
+                  if (t2 > 0 && t2 < collisionTime)
                      handleCollision(t2);
                };
                handleCylinder(p, q);
@@ -522,27 +522,27 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
                auto handleSphere = [&](vec3 p)
                {
-                  auto vDotV{dot(distance, distance)};
-                  auto pDotP{dot(p, p)};
-                  auto vDotP{dot(distance, p)};
+                  float vDotV = dot(distance, distance);
+                  float pDotP = dot(p, p);
+                  float vDotP = dot(distance, p);
 
-                  auto numeratorPart{vDotP};
-                  auto discriminant{square(vDotP) - vDotV * (pDotP - square(player.innerRadius))};
-                  auto denom{vDotV};
+                  float numeratorPart = vDotP;
+                  float discriminant = square(vDotP) - vDotV * (pDotP - square(player.innerRadius));
+                  float denom = vDotV;
 
-                  auto t1{(numeratorPart + sqrt(discriminant)) / denom};
-                  auto t2{(numeratorPart - sqrt(discriminant)) / denom};
+                  float t1 = (numeratorPart + sqrt(discriminant)) / denom;
+                  float t2 = (numeratorPart - sqrt(discriminant)) / denom;
 
                   auto handleCollision = [&](float time)
                   {
-                     auto pos{distance * time};
+                     vec3 pos = distance * time;
                      collided = true;
-                     t = time;
+                     collisionTime = time;
                      normal = normalize(pos - p);
                   };
-                  if (t1 > 0 && t1 < t)
+                  if (t1 > 0 && t1 < collisionTime)
                      handleCollision(t1);
-                  if (t2 > 0 && t2 < t)
+                  if (t2 > 0 && t2 < collisionTime)
                      handleCollision(t2);
                };
 
@@ -553,12 +553,12 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
             if (collided)
             {
                // if collided, push the outer radius out of the collision to resolve the previous penetration
-               player.curPos += t * distance;
+               player.curPos += collisionTime * distance;
                // note: we use the approximation sin(x) = x. technically you're supposed to move so that
                // the outer radius ball is tangent to the plane.
                player.curPos -= normalize(distance) * (player.outerRadius - player.innerRadius);
 
-               distance = (1 - t) * distance + (player.outerRadius - player.innerRadius) * normalize(distance); // also add the removed component to distance
+               distance = (1 - collisionTime) * distance + (player.outerRadius - player.innerRadius) * normalize(distance); // also add the removed component to distance
                distance -= dot(distance, normal) * normal;                                                      // find component orthogonal to the normal
             }
             else
@@ -613,9 +613,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
              {-x2, y2, d[i + 1]},
              {-x2, -y2, d[i + 1]},
          };
-         float xMin, yMin, zMin, xMax, yMax, zMax;
-         xMin = yMin = zMin = FLT_MAX;
-         xMax = yMax = zMax = -FLT_MAX;
+         float xMin = INFINITY, yMin = INFINITY, zMin = INFINITY, xMax = -INFINITY, yMax = -INFINITY, zMax = -INFINITY;
          range (i, 8)
          {
             vec3 v = transpose(shadowToWorldRotation) * (viewToWorldRotation * frustumPoints[i] + cam.pos);

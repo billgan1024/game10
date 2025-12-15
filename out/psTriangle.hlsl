@@ -9,7 +9,7 @@
 #endif
 
 
-#line 49 "shaders.hlsl"
+#line 48 "shaders.hlsl"
 void psTriangle(float4 svp_0 : SV_Position, float3 color_0 : color, out float3 target_0 : SV_Target)
 {
 

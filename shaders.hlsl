@@ -9,7 +9,6 @@ typedef float4x4 mat4;
 
 #define cb ConstantBuffer
 #define sb StructuredBuffer
-#define pi 3.14159265359
 
 vec4 operator*(mat4 m, vec4 v)
 {
@@ -151,6 +150,7 @@ void psShadow(vec4 svp: SV_Position, vec3 normal: normal, vec2 uv: uv, vec3 pos:
    {
       vec3 ndc = (cascade0 * vec4(pos, 1)).xyz;
       if (inVolume(ndc))
+         // is ndc.z < shadow[0][ndc2uv(ndc.xy)]?
          inLight = shadow[0].SampleCmp(cmp, ndc2uv(ndc.xy), ndc.z);
       else
       {

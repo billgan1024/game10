@@ -18,13 +18,13 @@
 
 == Graphics algorithms
 
-Perspective matrix for horizontal fov $f$, aspect ratio $a$, near plane $n$ (assuming x is right, y is up,
+Perspective matrix for horizontal fov $f in (0, pi)$, aspect ratio $a = w/h$, near plane $n$ (assuming x is right, y is up,
 z is forward) is given by
 
 $ mat(1 / tan(f slash 2), 0, 0, 0; 0, a / ( tan(f slash 2)), 0, 0; 0, 0, 0, n; 0, 0, 1, 0) $ describing the function
 $ (x, y, z, 1) |-> (x / tan(f slash 2), (a y) / ( tan(f slash 2)), n, z) $
 
-In clip space, we clip to $-w <= x <= w, -w <= y <= w, 0 <= z <= w, w > 0$.
+According to #link("https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc")[this], in clip space, we clip to $-w <= x <= w, -w <= y <= w, 0 <= z <= w, w > 0$.
 In terms of view-space coordinates, this is equivalent to clipping to
 
 $ -z tan(f slash 2) <= x <= z tan(f slash 2) $
@@ -33,6 +33,8 @@ $ 0 <= n <= z $
 $ z > 0 $
 
 Depth clip simply disables view $0 <= n <= z$, but $z > 0$ is still enforced. Note that if depth clip is disabled, then depth is *clamped to the viewport* before any depth testing takes place.
+
+Depth is then given by $n/z$
 
 
 
