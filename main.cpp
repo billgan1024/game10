@@ -104,6 +104,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 // int main()
 {
 
+   auto audio = thread(audioThread);
+
 #pragma region setup
    vector<RAWINPUTDEVICE> devices = {
        {
@@ -433,7 +435,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
          if (keyDown['A']) dir -= playerRight;
          if (keyDown['E']) dir += playerUp;
          if (keyDown['Q']) dir -= playerUp;
-         if (!eq(dir, {0, 0, 0}))
+         if (dir != vec3{0, 0, 0})
             dir = normalize(dir);
 
          player.curVel = dir * 8;
@@ -635,7 +637,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
          // by first aligning a to a bottom-left point and then subtracting that.
          // in effect, you are shifting the (xMax - xMin) x (yMax - yMin) rectangle to the up and right by a value in [0, s / 2048)
          cascades[i] = affine(scale(2 / s, 2 / s, 1 / (zMax - zMin)), {0, 0, 0}) *
-                       affine(transpose(shadowToWorldRotation), {-floor((xMin + xMax) / 2 / T) * T, -floor((yMin + yMax) / 2 / T) * T, -zMin});
+                       affine(transpose(shadowToWorldRotation), {-floor((xMin + xMax) / (2 * T)) * T, -floor((yMin + yMax) / (2 * T)) * T, -zMin});
          //    affine(transpose(shadowToWorldRotation), {-(xMin + xMax) / 2, -(yMin + yMax) / 2, -zMin});
       }
 

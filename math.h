@@ -20,6 +20,17 @@ struct vec
 };
 
 template <int N>
+bool operator==(vec<N> v, vec<N> w)
+{
+   range (i, N)
+   {
+      if (v[i] != w[i])
+         return false;
+   }
+   return true;
+}
+
+template <int N>
 vec<N> operator-(vec<N> v)
 {
    vec<N> res;
