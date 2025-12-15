@@ -154,7 +154,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    dev.As(&info);
    info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_CORRUPTION, true);
    info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_ERROR, true);
-//    info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, true);
+   info->SetBreakOnSeverity(D3D11_MESSAGE_SEVERITY_WARNING, true);
 #endif
 #pragma endregion
 
