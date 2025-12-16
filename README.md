@@ -1,3 +1,17 @@
-A game engine made with DirectX 11.
+A game engine made with C++ and DirectX 11.
+
+
+# Features
+- Cascaded shadow maps
+- Basic physics raycasting
+- Real-time audio mixing
+
+# Controls
+
+WASD: move
+
+Mouse: look around 
+
+Q/E: move up/down
 
 ![screenshot](screenshot.png)
