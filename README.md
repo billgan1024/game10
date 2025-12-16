@@ -3,7 +3,7 @@ A game engine made with C++ and DirectX 11.
 
 # Features
 - Cascaded shadow maps
-- Basic physics raycasting
+- Basic physics collision detection/resolution
 - Real-time audio mixing
 
 # Controls
