@@ -12,7 +12,7 @@
 
 #include <SimpleMath.h>
 #include <SpriteFont.h>
-#include <WaveFrontReader.h>
+// #include <WaveFrontReader.h>
 
 #include <array>
 #include <cstdint>
@@ -28,7 +28,7 @@
 #undef near
 
 using namespace std;
-using namespace DX;
+// using namespace DX;
 using namespace DirectX;
 using namespace SimpleMath;
 
@@ -117,9 +117,9 @@ void setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY top)
    ctx->IASetPrimitiveTopology(top);
 }
 
-void clearRenderTargetView(ID3D11RenderTargetView* rtv, vec4 color)
+void clearRenderTargetView(ID3D11RenderTargetView* rtv, vec3 color)
 {
-   ctx->ClearRenderTargetView(rtv, color.data);
+   ctx->ClearRenderTargetView(rtv, vec4{color[0], color[1], color[2], 1}.data);
 }
 
 void clearDepthStencilView(ID3D11DepthStencilView* dsv, float depth)
@@ -227,9 +227,9 @@ struct Mesh
 D3D11_VIEWPORT viewport(float width, float height)
 {
    return {
-       .Width = width,
-       .Height = height,
-       .MaxDepth = 1,
+      .Width = width,
+      .Height = height,
+      .MaxDepth = 1,
    };
 }
 
@@ -308,8 +308,8 @@ Texture2D createTexture(D3D11_TEXTURE2D_DESC desc)
    {
       if (desc.Format == DXGI_FORMAT_R32_TYPELESS)
          tex.dsv = createDepthStencilView(tex, {
-                                                   .Format = DXGI_FORMAT_D32_FLOAT,
-                                                   .ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D,
+                                                  .Format = DXGI_FORMAT_D32_FLOAT,
+                                                  .ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D,
                                                });
       else
          tex.dsv = createDepthStencilView(tex);
@@ -320,9 +320,9 @@ Texture2D createTexture(D3D11_TEXTURE2D_DESC desc)
 
       if (desc.Format == DXGI_FORMAT_R32_TYPELESS)
          tex.srv = createShaderResourceView(tex, {
-                                                     .Format = DXGI_FORMAT_R32_FLOAT,
-                                                     .ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,
-                                                     .Texture2D = {.MipLevels = desc.MipLevels},
+                                                    .Format = DXGI_FORMAT_R32_FLOAT,
+                                                    .ViewDimension = D3D11_SRV_DIMENSION_TEXTURE2D,
+                                                    .Texture2D = {.MipLevels = desc.MipLevels},
                                                  });
       else
          tex.srv = createShaderResourceView(tex);
@@ -426,10 +426,10 @@ struct cb
    cb()
    {
       buf = createBuffer({
-          .ByteWidth = sizeof(T) + 15 & ~15,
-          .Usage = D3D11_USAGE_DYNAMIC,
-          .BindFlags = D3D11_BIND_CONSTANT_BUFFER,
-          .CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
+         .ByteWidth = sizeof(T) + 15 & ~15,
+         .Usage = D3D11_USAGE_DYNAMIC,
+         .BindFlags = D3D11_BIND_CONSTANT_BUFFER,
+         .CPUAccessFlags = D3D11_CPU_ACCESS_WRITE,
       });
    }
 

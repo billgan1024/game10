@@ -104,50 +104,51 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 // int main()
 {
 
+   println("hello world");
    auto audioThread = thread(audioLoop);
 
 #pragma region setup
    vector<RAWINPUTDEVICE> devices = {
-       {
-           .usUsagePage = HID_USAGE_PAGE_GENERIC,
-           .usUsage = HID_USAGE_GENERIC_MOUSE,
-       }};
+      {
+         .usUsagePage = HID_USAGE_PAGE_GENERIC,
+         .usUsage = HID_USAGE_GENERIC_MOUSE,
+      }};
 
    RegisterRawInputDevices(devices.data(), devices.size(), sizeof(RAWINPUTDEVICE));
    SetProcessDPIAware();
 
    RegisterClass(&WNDCLASS{
-       .lpfnWndProc = callback,
-       .hCursor = LoadCursor(null, IDC_ARROW),
-       .lpszClassName = "Game",
+      .lpfnWndProc = callback,
+      .hCursor = LoadCursor(null, IDC_ARROW),
+      .lpszClassName = "Game",
    });
 
    auto hwnd = CreateWindow("Game", "Game",
-                             WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
-                           //  WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
+                            //   WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
+                            WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
                             null, null, null, null);
 
    RECT rect;
    GetClientRect(hwnd, &rect);
 
    D3D11CreateDeviceAndSwapChain(
-       null, D3D_DRIVER_TYPE_HARDWARE, null,
+      null, D3D_DRIVER_TYPE_HARDWARE, null,
 #ifdef _DEBUG
-       D3D11_CREATE_DEVICE_DEBUG,
+      D3D11_CREATE_DEVICE_DEBUG,
 #else
-       0,
+      0,
 #endif
-       null, 0, D3D11_SDK_VERSION,
-       &DXGI_SWAP_CHAIN_DESC{
-           .BufferDesc = {.Format = DXGI_FORMAT_R8G8B8A8_UNORM},
-           .SampleDesc = {.Count = 1},
-           .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
-           .BufferCount = 2,
-           .OutputWindow = hwnd,
-           .Windowed = true,
-           .SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
-       },
-       &sc, &dev, null, &ctx);
+      null, 0, D3D11_SDK_VERSION,
+      &DXGI_SWAP_CHAIN_DESC{
+         .BufferDesc = {.Format = DXGI_FORMAT_R8G8B8A8_UNORM},
+         .SampleDesc = {.Count = 1},
+         .BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT,
+         .BufferCount = 2,
+         .OutputWindow = hwnd,
+         .Windowed = true,
+         .SwapEffect = DXGI_SWAP_EFFECT_FLIP_DISCARD,
+      },
+      &sc, &dev, null, &ctx);
 
 #ifdef _DEBUG
    ComPtr<ID3D11InfoQueue> info;
@@ -166,10 +167,10 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    vec2 windowSize = {rect.right, rect.bottom};
 
    auto depthWindow = createTexture({
-       .Width = u32(windowSize[0]),
-       .Height = u32(windowSize[1]),
-       .Format = DXGI_FORMAT_D32_FLOAT,
-       .BindFlags = D3D11_BIND_DEPTH_STENCIL,
+      .Width = u32(windowSize[0]),
+      .Height = u32(windowSize[1]),
+      .Format = DXGI_FORMAT_D32_FLOAT,
+      .BindFlags = D3D11_BIND_DEPTH_STENCIL,
    });
 
    //    material id so that we shade the level with ssao and the player with half lambert lighting
@@ -178,10 +179,10 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    Texture2D shadowMap[4];
    range (i, 4)
       shadowMap[i] = createTexture({
-          .Width = 2048,
-          .Height = 2048,
-          .Format = DXGI_FORMAT_R32_TYPELESS,
-          .BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE,
+         .Width = 2048,
+         .Height = 2048,
+         .Format = DXGI_FORMAT_R32_TYPELESS,
+         .BindFlags = D3D11_BIND_DEPTH_STENCIL | D3D11_BIND_SHADER_RESOURCE,
       });
 
    auto spriteBatch = SpriteBatch(ctx);
@@ -189,60 +190,60 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 #pragma region states
    auto ssGrid = createSamplerState({
-       .Filter = D3D11_FILTER_ANISOTROPIC,
-       .AddressU = D3D11_TEXTURE_ADDRESS_WRAP,
-       .AddressV = D3D11_TEXTURE_ADDRESS_WRAP,
-       .AddressW = D3D11_TEXTURE_ADDRESS_WRAP,
-       .MaxAnisotropy = 16,
-       .MinLOD = -FLT_MAX,
-       .MaxLOD = FLT_MAX,
+      .Filter = D3D11_FILTER_ANISOTROPIC,
+      .AddressU = D3D11_TEXTURE_ADDRESS_WRAP,
+      .AddressV = D3D11_TEXTURE_ADDRESS_WRAP,
+      .AddressW = D3D11_TEXTURE_ADDRESS_WRAP,
+      .MaxAnisotropy = 16,
+      .MinLOD = -FLT_MAX,
+      .MaxLOD = FLT_MAX,
    });
    auto ssLinear = createSamplerState({
-       .Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR,
-       .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .MinLOD = -FLT_MAX,
-       .MaxLOD = FLT_MAX,
+      .Filter = D3D11_FILTER_MIN_MAG_MIP_LINEAR,
+      .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .MinLOD = -FLT_MAX,
+      .MaxLOD = FLT_MAX,
    });
    auto ssPoint = createSamplerState({
-       .Filter = D3D11_FILTER_MIN_MAG_MIP_POINT,
-       .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .Filter = D3D11_FILTER_MIN_MAG_MIP_POINT,
+      .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
    });
    auto ssCmp = createSamplerState({
-       .Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR,
-       .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
-       .ComparisonFunc = D3D11_COMPARISON_LESS,
-       // minlod = maxlod = 0 (no mips)
+      .Filter = D3D11_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR,
+      .AddressU = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressV = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .AddressW = D3D11_TEXTURE_ADDRESS_CLAMP,
+      .ComparisonFunc = D3D11_COMPARISON_LESS,
+      // minlod = maxlod = 0 (no mips)
    });
 
    auto dsGreater = createDepthState({
-       .DepthEnable = true,
-       .DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
-       .DepthFunc = D3D11_COMPARISON_GREATER,
+      .DepthEnable = true,
+      .DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
+      .DepthFunc = D3D11_COMPARISON_GREATER,
    });
 
    auto dsLess = createDepthState({
-       .DepthEnable = true,
-       .DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
-       .DepthFunc = D3D11_COMPARISON_LESS,
+      .DepthEnable = true,
+      .DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL,
+      .DepthFunc = D3D11_COMPARISON_LESS,
    });
 
    auto rsFill = createRasterState({
-       .FillMode = D3D11_FILL_SOLID,
-       .CullMode = D3D11_CULL_BACK,
-       .DepthClipEnable = true,
+      .FillMode = D3D11_FILL_SOLID,
+      .CullMode = D3D11_CULL_BACK,
+      .DepthClipEnable = true,
    });
    auto rsShadow = createRasterState({
-       .FillMode = D3D11_FILL_SOLID,
-       .CullMode = D3D11_CULL_BACK,
-       .DepthBiasClamp = 0.05,
-       .SlopeScaledDepthBias = 3,
-       // depth clip false to pancake depth
+      .FillMode = D3D11_FILL_SOLID,
+      .CullMode = D3D11_CULL_BACK,
+      .DepthBiasClamp = 0.05,
+      .SlopeScaledDepthBias = 3,
+      // depth clip false to pancake depth
    });
 
 #pragma endregion
@@ -253,31 +254,31 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 #pragma region enemy
    enemy.points = createShaderResourceView(createBuffer({
-                                                            .ByteWidth = LEN(scene, 0, attributes["POSITION"]),
-                                                            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                            .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                            .StructureByteStride = sizeof(vec3),
+                                                           .ByteWidth = LEN(scene, 0, attributes["POSITION"]),
+                                                           .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                           .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                           .StructureByteStride = sizeof(vec3),
                                                         },
                                                         {
-                                                            .pSysMem = DATA(scene, 0, attributes["POSITION"]),
+                                                           .pSysMem = DATA(scene, 0, attributes["POSITION"]),
                                                         }));
 
    enemy.normals = createShaderResourceView(createBuffer({
-                                                             .ByteWidth = LEN(scene, 0, attributes["NORMAL"]),
-                                                             .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                             .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                             .StructureByteStride = sizeof(vec3),
+                                                            .ByteWidth = LEN(scene, 0, attributes["NORMAL"]),
+                                                            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                            .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                            .StructureByteStride = sizeof(vec3),
                                                          },
                                                          {
-                                                             .pSysMem = DATA(scene, 0, attributes["NORMAL"]),
+                                                            .pSysMem = DATA(scene, 0, attributes["NORMAL"]),
                                                          }));
 
    enemy.indices = createBuffer({
-                                    .ByteWidth = LEN(scene, 0, indices),
-                                    .BindFlags = D3D11_BIND_INDEX_BUFFER,
+                                   .ByteWidth = LEN(scene, 0, indices),
+                                   .BindFlags = D3D11_BIND_INDEX_BUFFER,
                                 },
                                 {
-                                    .pSysMem = DATA(scene, 0, indices),
+                                   .pSysMem = DATA(scene, 0, indices),
                                 });
    enemy.count = COUNT(scene, 0, indices);
 
@@ -285,95 +286,95 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
 #pragma region player
    player.points = createShaderResourceView(createBuffer({
-                                                             .ByteWidth = LEN(scene, 1, attributes["POSITION"]),
-                                                             .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                             .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                             .StructureByteStride = sizeof(vec3),
+                                                            .ByteWidth = LEN(scene, 1, attributes["POSITION"]),
+                                                            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                            .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                            .StructureByteStride = sizeof(vec3),
                                                          },
                                                          {
-                                                             .pSysMem = DATA(scene, 1, attributes["POSITION"]),
+                                                            .pSysMem = DATA(scene, 1, attributes["POSITION"]),
                                                          }));
 
    player.normals = createShaderResourceView(createBuffer({
-                                                              .ByteWidth = LEN(scene, 1, attributes["NORMAL"]),
-                                                              .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                              .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                              .StructureByteStride = sizeof(vec3),
+                                                             .ByteWidth = LEN(scene, 1, attributes["NORMAL"]),
+                                                             .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                             .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                             .StructureByteStride = sizeof(vec3),
                                                           },
                                                           {
-                                                              .pSysMem = DATA(scene, 1, attributes["NORMAL"]),
+                                                             .pSysMem = DATA(scene, 1, attributes["NORMAL"]),
                                                           }));
 
    player.uvs = createShaderResourceView(createBuffer({
-                                                          .ByteWidth = LEN(scene, 1, attributes["TEXCOORD_0"]),
-                                                          .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                          .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                          .StructureByteStride = sizeof(vec2),
+                                                         .ByteWidth = LEN(scene, 1, attributes["TEXCOORD_0"]),
+                                                         .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                         .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                         .StructureByteStride = sizeof(vec2),
                                                       },
                                                       {
-                                                          .pSysMem = DATA(scene, 1, attributes["TEXCOORD_0"]),
+                                                         .pSysMem = DATA(scene, 1, attributes["TEXCOORD_0"]),
                                                       }));
 
    player.indices = createBuffer({
-                                     .ByteWidth = LEN(scene, 1, indices),
-                                     .BindFlags = D3D11_BIND_INDEX_BUFFER,
+                                    .ByteWidth = LEN(scene, 1, indices),
+                                    .BindFlags = D3D11_BIND_INDEX_BUFFER,
                                  },
                                  {
-                                     .pSysMem = DATA(scene, 1, indices),
+                                    .pSysMem = DATA(scene, 1, indices),
                                  });
    player.count = COUNT(scene, 1, indices);
 
    player.diffuse = createTexture({
-                                      .Width = u32(scene.images[1].width),
-                                      .Height = u32(scene.images[1].height),
-                                      .MipLevels = BIT_WIDTH(scene.images[1].width),
-                                      .Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-                                      .MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS,
+                                     .Width = u32(scene.images[1].width),
+                                     .Height = u32(scene.images[1].height),
+                                     .MipLevels = BIT_WIDTH(scene.images[1].width),
+                                     .Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+                                     .MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS,
                                   },
                                   {
-                                      .pSysMem = scene.images[1].image.data(),
+                                     .pSysMem = scene.images[1].image.data(),
                                   });
 #pragma endregion
 
 #pragma region level
    level.points = createShaderResourceView(createBuffer({
-                                                            .ByteWidth = LEN(scene, 2, attributes["POSITION"]),
-                                                            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                            .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                            .StructureByteStride = sizeof(vec3),
+                                                           .ByteWidth = LEN(scene, 2, attributes["POSITION"]),
+                                                           .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                           .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                           .StructureByteStride = sizeof(vec3),
                                                         },
                                                         {
-                                                            .pSysMem = DATA(scene, 2, attributes["POSITION"]),
+                                                           .pSysMem = DATA(scene, 2, attributes["POSITION"]),
                                                         }));
 
    level.normals = createShaderResourceView(createBuffer({
-                                                             .ByteWidth = LEN(scene, 2, attributes["NORMAL"]),
-                                                             .BindFlags = D3D11_BIND_SHADER_RESOURCE,
-                                                             .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
-                                                             .StructureByteStride = sizeof(vec3),
+                                                            .ByteWidth = LEN(scene, 2, attributes["NORMAL"]),
+                                                            .BindFlags = D3D11_BIND_SHADER_RESOURCE,
+                                                            .MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED,
+                                                            .StructureByteStride = sizeof(vec3),
                                                          },
                                                          {
-                                                             .pSysMem = DATA(scene, 2, attributes["NORMAL"]),
+                                                            .pSysMem = DATA(scene, 2, attributes["NORMAL"]),
                                                          }));
    level.indices = createBuffer({
-                                    .ByteWidth = LEN(scene, 2, indices),
-                                    .BindFlags = D3D11_BIND_INDEX_BUFFER,
+                                   .ByteWidth = LEN(scene, 2, indices),
+                                   .BindFlags = D3D11_BIND_INDEX_BUFFER,
                                 },
                                 {
-                                    .pSysMem = DATA(scene, 2, indices),
+                                   .pSysMem = DATA(scene, 2, indices),
                                 });
 
    level.count = COUNT(scene, 2, indices);
 
    level.diffuse = createTexture({
-                                     .Width = u32(scene.images[2].width),
-                                     .Height = u32(scene.images[2].height),
-                                     .MipLevels = BIT_WIDTH(scene.images[2].width),
-                                     .Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
-                                     .MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS,
+                                    .Width = u32(scene.images[2].width),
+                                    .Height = u32(scene.images[2].height),
+                                    .MipLevels = BIT_WIDTH(scene.images[2].width),
+                                    .Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB,
+                                    .MiscFlags = D3D11_RESOURCE_MISC_GENERATE_MIPS,
                                  },
                                  {
-                                     .pSysMem = scene.images[2].image.data(),
+                                    .pSysMem = scene.images[2].image.data(),
                                  });
 #pragma endregion
 
@@ -559,7 +560,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                player.curPos -= normalize(distance) * (player.outerRadius - player.innerRadius);
 
                distance = (1 - collisionTime) * distance + (player.outerRadius - player.innerRadius) * normalize(distance); // also add the removed component to distance
-               distance -= dot(distance, normal) * normal;                                                      // find component orthogonal to the normal
+               distance -= dot(distance, normal) * normal;                                                                  // find component orthogonal to the normal
             }
             else
             {
@@ -587,12 +588,12 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       // if (keyDown['D']) cam.pos += camRight * cam.speed * dt;
 
       float aspect = windowSize[0] / windowSize[1];
-      view = affine(transpose(viewToWorldRotation), vec3{}) * affine(id<3>(), -cam.pos);
+      view = affine(transpose(viewToWorldRotation), vec3{0, 0, 0}) * affine(id<3>(), -cam.pos);
       proj = {
-          1 / tan(cam.fov / 2), 0, 0, 0,
-          0, aspect / tan(cam.fov / 2), 0, 0,
-          0, 0, 0, cam.near,
-          0, 0, 1, 0};
+         1 / tan(cam.fov / 2), 0, 0, 0,
+         0, aspect / tan(cam.fov / 2), 0, 0,
+         0, 0, 0, cam.near,
+         0, 0, 1, 0};
 
 #pragma region update cascades
 
@@ -604,16 +605,16 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
          float x2 = d[i + 1] * tan(cam.fov / 2);
          float y2 = x2 / aspect;
          vec3 frustumPoints[] = {
-             {x1, -y1, d[i]},
-             {x1, y1, d[i]},
-             {-x1, y1, d[i]},
-             {-x1, -y1, d[i]},
-             {x2, -y2, d[i + 1]},
-             {x2, y2, d[i + 1]},
-             {-x2, y2, d[i + 1]},
-             {-x2, -y2, d[i + 1]},
+            {x1, -y1, d[i]},
+            {x1, y1, d[i]},
+            {-x1, y1, d[i]},
+            {-x1, -y1, d[i]},
+            {x2, -y2, d[i + 1]},
+            {x2, y2, d[i + 1]},
+            {-x2, y2, d[i + 1]},
+            {-x2, -y2, d[i + 1]},
          };
-         float xMin = INFINITY, yMin = INFINITY, zMin = INFINITY, xMax = -INFINITY, yMax = -INFINITY, zMax = -INFINITY;
+         float xMin = FLT_MAX, yMin = FLT_MAX, zMin = FLT_MAX, xMax = -FLT_MAX, yMax = -FLT_MAX, zMax = -FLT_MAX;
          range (i, 8)
          {
             vec3 v = transpose(shadowToWorldRotation) * (viewToWorldRotation * frustumPoints[i] + cam.pos);
@@ -667,7 +668,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       setVertexConstants(0, {model, view, proj});
       setPixelConstants(0, {light, cascades[0], cascades[1], cascades[2], cascades[3]});
 
-      clearRenderTargetView(texWindow, rgba(139, 162, 191, 1));
+      clearRenderTargetView(texWindow, rgb(139, 162, 191));
       clearDepthStencilView(depthWindow, 0); // reverse depth means 0 = far plane
                                              // so error during world space -> view space -> clip space -> screen space
                                              // conversion is spread out more evenly (projection matrix defines a

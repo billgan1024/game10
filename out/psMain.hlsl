@@ -23,11 +23,11 @@ cbuffer entryPointParams_light_0 : register(b0)
     float3 entryPointParams_light_0;
 }
 
-#line 112 "shaders.hlsl"
+#line 111 "shaders.hlsl"
 void psMain(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 : uv, out float4 target_0 : SV_Target)
 {
 
-#line 120
+#line 119
     target_0 = (0.75f * ((dot(normalize(normal_0), entryPointParams_light_0) + 1.0f) / 2.0f) + 0.25f) * entryPointParams_diffuse_0.Sample(entryPointParams_sampler_0, uv_0);
     return;
 }

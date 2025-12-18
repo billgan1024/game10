@@ -32,11 +32,17 @@ $ -(z tan(f slash 2)) / a <= y <= (z tan(f slash 2)) / a $
 $ 0 <= n <= z $
 $ z > 0 $
 
-Depth clip simply disables view $0 <= n <= z$, but $z > 0$ is still enforced. Note that if depth clip is disabled, then depth is *clamped to the viewport* before any depth testing takes place.
+Depth clip simply disables view $0 <= n <= z$, but $z > 0$ is still enforced. Note that if depth clip is disabled, then depth is *clamped to the viewport* before any depth testing takes place (see #link("https://learn.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage")[docs]).
 
-Depth is then given by $n/z$
+NDC is then given (in terms of view space) by
+$ (x/(z tan(f slash 2)), (a y)/(z tan(f slash 2)), n/z) $
 
 
+Now let $p_1, p_2, p_3 in RR^3$ be the vertices of a triangle in view space. Let $p = a p_1 + b p_2 + c p_3$ where $a, b, c >= 0, a + b + c = 1$ be a point inside the triangle. Let $f_1, f_2, f_3$ be attribute values at the vertices.
+
+Evidently, the interpolated attribute value at $p$ is given by $F = a f_1 + b f_2 + c f_3$. But this is also equal to the value given by the rasterization formula (check rasterization.ipynb and the #link("https://docs.vulkan.org/spec/latest/chapters/primsrast.html#primsrast-polygons-basic")[vulkan spec].
+
+== Orthographic projection
 
 Now, let $a, b, c in RR$.
 Ortho projection is given by

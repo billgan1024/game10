@@ -9,27 +9,27 @@
 #endif
 
 
-#line 92 "shaders.hlsl"
+#line 91 "shaders.hlsl"
 StructuredBuffer<float3 > entryPointParams_points_0 : register(t0);
 
 
-#line 92
+#line 91
 StructuredBuffer<float3 > entryPointParams_normals_0 : register(t1);
 
 
-#line 92
+#line 91
 cbuffer entryPointParams_model_0 : register(b0)
 {
     float4x4 entryPointParams_model_0;
 }
 
-#line 92
+#line 91
 cbuffer entryPointParams_view_0 : register(b1)
 {
     float4x4 entryPointParams_view_0;
 }
 
-#line 92
+#line 91
 cbuffer entryPointParams_proj_0 : register(b2)
 {
     float4x4 entryPointParams_proj_0;
@@ -53,7 +53,7 @@ float4 x2A_1(float4x4 m_0, float4 v_0)
 float3x3 inverse_0(float3x3 m_1)
 {
 
-#line 78
+
     return float3x3(m_1[int(1)][int(1)] * m_1[int(2)][int(2)] - m_1[int(2)][int(1)] * m_1[int(1)][int(2)], m_1[int(0)][int(2)] * m_1[int(2)][int(1)] - m_1[int(0)][int(1)] * m_1[int(2)][int(2)], m_1[int(0)][int(1)] * m_1[int(1)][int(2)] - m_1[int(0)][int(2)] * m_1[int(1)][int(1)], m_1[int(1)][int(2)] * m_1[int(2)][int(0)] - m_1[int(1)][int(0)] * m_1[int(2)][int(2)], m_1[int(0)][int(0)] * m_1[int(2)][int(2)] - m_1[int(0)][int(2)] * m_1[int(2)][int(0)], m_1[int(1)][int(0)] * m_1[int(0)][int(2)] - m_1[int(0)][int(0)] * m_1[int(1)][int(2)], m_1[int(1)][int(0)] * m_1[int(2)][int(1)] - m_1[int(2)][int(0)] * m_1[int(1)][int(1)], m_1[int(2)][int(0)] * m_1[int(0)][int(1)] - m_1[int(0)][int(0)] * m_1[int(2)][int(1)], m_1[int(0)][int(0)] * m_1[int(1)][int(1)] - m_1[int(1)][int(0)] * m_1[int(0)][int(1)]) / dot(m_1[int(0)], cross(m_1[int(1)], m_1[int(2)]));
 }
 
@@ -65,17 +65,17 @@ float3 x2A_2(float3x3 m_2, float3 v_1)
 }
 
 
-#line 92
+#line 91
 void vsTriplanar(uint id_0 : SV_VertexID, out float4 svp_0 : SV_Position, out float3 normal_0 : normal, out float2 uv_0 : uv, out float3 pos_0 : pos)
 {
 
-#line 92
+#line 91
     uint _S1 = id_0;
 
-#line 98
+#line 97
     float4x4 _S2 = entryPointParams_model_0;
 
-#line 98
+#line 97
     svp_0 = x2A_1(x2A_0(x2A_0(entryPointParams_proj_0, entryPointParams_view_0), entryPointParams_model_0), float4(entryPointParams_points_0.Load(id_0), 1.0f));
     normal_0 = normalize(x2A_2(inverse_0(transpose(float3x3(_S2[int(0)].xyz, _S2[int(1)].xyz, _S2[int(2)].xyz))), entryPointParams_normals_0.Load(_S1)));
 
@@ -83,80 +83,80 @@ void vsTriplanar(uint id_0 : SV_VertexID, out float4 svp_0 : SV_Position, out fl
     float3 n_0 = entryPointParams_normals_0.Load(_S1);
     float _S3 = abs(n_0.x);
 
-#line 103
+#line 102
     float _S4 = abs(n_0.y);
 
-#line 103
+#line 102
     bool _S5;
 
-#line 103
+#line 102
     if(_S3 > _S4)
     {
 
-#line 103
+#line 102
         _S5 = _S3 > (abs(n_0.z));
 
-#line 103
+#line 102
     }
     else
     {
 
-#line 103
+#line 102
         _S5 = false;
 
-#line 103
+#line 102
     }
 
-#line 103
+#line 102
     if(_S5)
     {
 
-#line 104
+#line 103
         uv_0 = float2(p_0.y, p_0.z);
 
-#line 103
+#line 102
     }
     else
     {
 
-#line 105
+#line 104
         if(_S4 > _S3)
         {
 
-#line 105
+#line 104
             _S5 = _S4 > (abs(n_0.z));
 
-#line 105
+#line 104
         }
         else
         {
 
-#line 105
+#line 104
             _S5 = false;
 
-#line 105
+#line 104
         }
 
-#line 105
+#line 104
         if(_S5)
         {
 
-#line 106
+#line 105
             uv_0 = float2(p_0.x, p_0.z);
 
-#line 105
+#line 104
         }
         else
         {
             uv_0 = float2(p_0.x, p_0.y);
 
-#line 105
+#line 104
         }
 
-#line 103
+#line 102
     }
 
-#line 109
+#line 108
     pos_0 = x2A_1(_S2, float4(entryPointParams_points_0.Load(_S1), 1.0f)).xyz;
     return;
 }

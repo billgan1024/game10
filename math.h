@@ -125,9 +125,9 @@ bool eq(vec<N> v, vec<N> w)
 vec3 cross(vec3 v, vec3 w)
 {
    return {
-       v[1] * w[2] - v[2] * w[1],
-       v[2] * w[0] - v[0] * w[2],
-       v[0] * w[1] - v[1] * w[0]};
+      v[1] * w[2] - v[2] * w[1],
+      v[2] * w[0] - v[0] * w[2],
+      v[0] * w[1] - v[1] * w[0]};
 }
 
 template <int N, int M>
@@ -203,8 +203,8 @@ mat2 inverse(mat2 A)
 {
    float det = A[0][0] * A[1][1] - A[0][1] * A[1][0];
    return mat2{
-              A[1][1], -A[0][1],
-              -A[1][0], A[0][0]} /
+             A[1][1], -A[0][1],
+             -A[1][0], A[0][0]} /
           det;
 }
 
@@ -218,9 +218,9 @@ mat2x3 leftInverse(mat3x2 A)
 mat3x2 columns(vec3 v, vec3 w)
 {
    return {
-       v[0], w[0],
-       v[1], w[1],
-       v[2], w[2]};
+      v[0], w[0],
+      v[1], w[1],
+      v[2], w[2]};
 }
 
 mat3 euler(float y, float p, float r)
@@ -240,10 +240,10 @@ mat3 scale(float x, float y, float z)
 mat4 affine(mat3 A, vec3 v)
 {
    return {
-       A[0][0], A[0][1], A[0][2], v[0],
-       A[1][0], A[1][1], A[1][2], v[1],
-       A[2][0], A[2][1], A[2][2], v[2],
-       0, 0, 0, 1};
+      A[0][0], A[0][1], A[0][2], v[0],
+      A[1][0], A[1][1], A[1][2], v[1],
+      A[2][0], A[2][1], A[2][2], v[2],
+      0, 0, 0, 1};
 }
 
 template <int N>

@@ -1,5 +1,6 @@
 IndentWidth: 3
 IndentCaseLabels: true
+ContinuationIndentWidth: 3
 BreakBeforeBraces: Allman
 ColumnLimit: 0
 PointerAlignment: Left
