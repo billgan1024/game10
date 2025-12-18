@@ -6,14 +6,16 @@ macro(fetch NAME)
    FetchContent_MakeAvailable(${NAME})
 endmacro()
 
-set(SLANG_VERSION "2025.11")
 
+add_compile_options(/wd4865)
+set(SLANG_VERSION "2025.11")
 fetch(slang URL https://github.com/shader-slang/slang/releases/download/v${SLANG_VERSION}/slang-${SLANG_VERSION}-windows-x86_64.zip)
 fetch(DirectXTK GIT_REPOSITORY https://github.com/microsoft/DirectXTK GIT_TAG da4c330)
 # fetch(DirectXMesh GIT_REPOSITORY https://github.com/microsoft/DirectXMesh.git GIT_TAG 02108eb)
 fetch(tinygltf GIT_REPOSITORY https://github.com/syoyo/tinygltf.git GIT_TAG 37250b3)
 
-add_compile_options(/std:c++latest /Zc:preprocessor /wd4244 /wd4267 /wd4305 /wd4018 /wd4838)
+# 4244, 4267, 4305, 4838: conversion warnings
+add_compile_options(/std:c++latest /Zc:preprocessor /wd4244 /wd4267 /wd4305 /wd4838)
 link_libraries(d3d11 d3dcompiler DirectXTK tinygltf)
 # link_libraries(Utilities)
 
@@ -25,6 +27,7 @@ file(READ shaders.hlsl shaders)
 string(REGEX MATCHALL "[vp]s[a-zA-Z]+" matches ${shaders})
 
 # use slang because fxc doesn't accept ConstantBuffer syntax
+
 foreach(match ${matches})
    string(SUBSTRING ${match} 0 2 stage)
    add_custom_command(TARGET game POST_BUILD

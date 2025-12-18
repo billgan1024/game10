@@ -242,7 +242,8 @@ void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 
     }
 
 #line 173
-    target_0 = lambert_0 * lerp(0.64999997615814209f, 1.0f, inLight_0) * entryPointParams_diffuse_0.Sample(entryPointParams_sampler_0, _S4);
+    target_0 = lambert_0 * lerp(0.40000000596046448f, 1.0f, inLight_0) * entryPointParams_diffuse_0.Sample(entryPointParams_sampler_0, _S4);
+
     return;
 }
 

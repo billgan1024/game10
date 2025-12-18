@@ -117,9 +117,9 @@ void setPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY top)
    ctx->IASetPrimitiveTopology(top);
 }
 
-void clearRenderTargetView(ID3D11RenderTargetView* rtv, vec3 color)
+void clearRenderTargetView(ID3D11RenderTargetView* rtv, vec4 color)
 {
-   ctx->ClearRenderTargetView(rtv, vec4{color[0], color[1], color[2], 1}.data);
+   ctx->ClearRenderTargetView(rtv, color.data);
 }
 
 void clearDepthStencilView(ID3D11DepthStencilView* dsv, float depth)

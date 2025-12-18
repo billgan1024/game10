@@ -124,8 +124,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    });
 
    auto hwnd = CreateWindow("Game", "Game",
-                            //   WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
-                            WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
+                            WS_POPUP | WS_MAXIMIZE, 0, 0, 0, 0,
+                            //  WS_OVERLAPPEDWINDOW ^ (WS_SIZEBOX | WS_MAXIMIZEBOX), 50, 50, 1920, 1080,
                             null, null, null, null);
 
    RECT rect;
@@ -668,7 +668,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       setVertexConstants(0, {model, view, proj});
       setPixelConstants(0, {light, cascades[0], cascades[1], cascades[2], cascades[3]});
 
-      clearRenderTargetView(texWindow, rgb(139, 162, 191));
+      clearRenderTargetView(texWindow, rgba(139, 162, 191, 1));
       clearDepthStencilView(depthWindow, 0); // reverse depth means 0 = far plane
                                              // so error during world space -> view space -> clip space -> screen space
                                              // conversion is spread out more evenly (projection matrix defines a

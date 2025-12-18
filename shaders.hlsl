@@ -170,6 +170,7 @@ void psShadow(vec4 svp: SV_Position, vec3 normal: normal, vec2 uv: uv, vec3 pos:
          }
       }
    }
-   target = lambert * lerp(0.65, 1, inLight) * diffuse.Sample(sampler, uv);
+   target = lambert * lerp(0.4, 1, inLight) * diffuse.Sample(sampler, uv);
+   // target = rgba(125, 125, 125, 1);
 }
 
