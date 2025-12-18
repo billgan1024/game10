@@ -393,6 +393,8 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
    cb<mat4> model, view, proj, cascades[4]; // cascades transform world space to shadow
    cb<vec3> light;
 
+   // cb<mat4[4]> test;
+
    mat3 shadowToWorldRotation = euler(-pi / 6, pi / 3, 0);
    light = -shadowToWorldRotation * vec3{0, 0, 1};
 

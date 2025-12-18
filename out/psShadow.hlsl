@@ -31,31 +31,11 @@ cbuffer entryPointParams_light_0 : register(b0)
     float3 entryPointParams_light_0;
 }
 
-#line 4313
-cbuffer entryPointParams_cascade0_0 : register(b1)
-{
-    float4x4 entryPointParams_cascade0_0;
-}
+#line 137 "shaders.hlsl"
+ConstantBuffer<float4x4 >  entryPointParams_cascades_0[int(4)] : register(b1);
 
-#line 4313
-cbuffer entryPointParams_cascade1_0 : register(b2)
-{
-    float4x4 entryPointParams_cascade1_0;
-}
 
-#line 4313
-cbuffer entryPointParams_cascade2_0 : register(b3)
-{
-    float4x4 entryPointParams_cascade2_0;
-}
-
-#line 4313
-cbuffer entryPointParams_cascade3_0 : register(b4)
-{
-    float4x4 entryPointParams_cascade3_0;
-}
-
-#line 13 "shaders.hlsl"
+#line 13
 float4 x2A_0(float4x4 m_0, float4 v_0)
 {
     return mul(m_0, v_0);
@@ -151,13 +131,13 @@ void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 
 #line 137
     float3 _S5 = pos_0;
 
-#line 145
+#line 148
     float _S6 = dot(normalize(normal_0), entryPointParams_light_0);
 
-#line 145
+#line 148
     float lambert_0 = 0.75f * ((_S6 + 1.0f) / 2.0f) + 0.25f;
 
-#line 145
+#line 148
     float inLight_0;
 
 
@@ -165,83 +145,83 @@ void psShadow(float4 svp_0 : SV_Position, float3 normal_0 : normal, float2 uv_0 
     {
         float4 _S7 = float4(_S5, 1.0f);
 
-#line 150
-        float3 ndc_2 = x2A_0(entryPointParams_cascade0_0, _S7).xyz;
+#line 153
+        float3 ndc_2 = x2A_0(entryPointParams_cascades_0[int(0)], _S7).xyz;
         if(inVolume_0(ndc_2))
         {
 
-#line 151
+#line 154
             inLight_0 = entryPointParams_shadow_0[int(0)].SampleCmp(entryPointParams_cmp_0, ndc2uv_0(ndc_2.xy), ndc_2.z);
 
-#line 151
+#line 154
         }
         else
         {
 
 
-            float3 ndc_3 = x2A_0(entryPointParams_cascade1_0, _S7).xyz;
+            float3 ndc_3 = x2A_0(entryPointParams_cascades_0[int(1)], _S7).xyz;
             if(inVolume_0(ndc_3))
             {
 
-#line 157
+#line 160
                 inLight_0 = entryPointParams_shadow_0[int(1)].SampleCmp(entryPointParams_cmp_0, ndc2uv_0(ndc_3.xy), ndc_3.z);
 
-#line 157
+#line 160
             }
             else
             {
 
-                float3 ndc_4 = x2A_0(entryPointParams_cascade2_0, _S7).xyz;
+                float3 ndc_4 = x2A_0(entryPointParams_cascades_0[int(2)], _S7).xyz;
                 if(inVolume_0(ndc_4))
                 {
 
-#line 162
+#line 165
                     inLight_0 = entryPointParams_shadow_0[int(2)].SampleCmp(entryPointParams_cmp_0, ndc2uv_0(ndc_4.xy), ndc_4.z);
 
-#line 162
+#line 165
                 }
                 else
                 {
 
-                    float3 ndc_5 = x2A_0(entryPointParams_cascade3_0, _S7).xyz;
+                    float3 ndc_5 = x2A_0(entryPointParams_cascades_0[int(3)], _S7).xyz;
                     if(inVolume_0(ndc_5))
                     {
 
-#line 167
+#line 170
                         inLight_0 = entryPointParams_shadow_0[int(3)].SampleCmp(entryPointParams_cmp_0, ndc2uv_0(ndc_5.xy), ndc_5.z);
 
-#line 167
+#line 170
                     }
                     else
                     {
 
-#line 167
+#line 170
                         inLight_0 = 1.0f;
 
-#line 167
+#line 170
                     }
 
-#line 162
+#line 165
                 }
 
-#line 157
+#line 160
             }
 
-#line 151
+#line 154
         }
 
-#line 148
+#line 151
     }
     else
     {
 
-#line 148
+#line 151
         inLight_0 = 1.0f;
 
-#line 148
+#line 151
     }
 
-#line 173
+#line 176
     target_0 = lambert_0 * lerp(0.40000000596046448f, 1.0f, inLight_0) * entryPointParams_diffuse_0.Sample(entryPointParams_sampler_0, _S4);
 
     return;

@@ -440,6 +440,18 @@ struct cb
       *(T*)mapped.pData = data;
       ctx->Unmap(buf, 0);
    }
+
+   void* map()
+   {
+      D3D11_MAPPED_SUBRESOURCE mapped;
+      ctx->Map(buf, 0, D3D11_MAP_WRITE_DISCARD, 0, &mapped);
+      return mapped.pData;
+   }
+
+   void unmap()
+   {
+      ctx->Unmap(buf, 0);
+   }
 };
 
 #include "audio.h"
