@@ -10,7 +10,7 @@ endmacro()
 # 4244, 4267, 4305, 4838: conversion warnings
 # 4865: https://learn.microsoft.com/en-us/cpp/build/reference/zc-enumtypes?view=msvc-170
 add_compile_options(/std:c++latest /Zc:preprocessor /wd4244 /wd4267 /wd4305 /wd4838 /wd4865)
-set(SLANG_VERSION "2025.11")
+set(SLANG_VERSION "2025.24.1")
 fetch(slang URL https://github.com/shader-slang/slang/releases/download/v${SLANG_VERSION}/slang-${SLANG_VERSION}-windows-x86_64.zip)
 fetch(DirectXTK GIT_REPOSITORY https://github.com/microsoft/DirectXTK GIT_TAG da4c330)
 # fetch(DirectXMesh GIT_REPOSITORY https://github.com/microsoft/DirectXMesh.git GIT_TAG 02108eb)

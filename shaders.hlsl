@@ -100,11 +100,11 @@ void vsTriplanar(uint id: SV_VertexID,
    vec3 p = points[id];
    vec3 n = normals[id];
    if (abs(n.x) > abs(n.y) && abs(n.x) > abs(n.z))
-      uv = vec2(p.y, p.z);
+      uv = { p.y, p.z };
    else if (abs(n.y) > abs(n.x) && abs(n.y) > abs(n.z))
-      uv = vec2(p.x, p.z);
+      uv = { p.x, p.z };
    else
-      uv = vec2(p.x, p.y);
+      uv = { p.x, p.y };
    pos = (model * vec4(points[id], 1)).xyz;
 }
 

@@ -18,19 +18,23 @@
 
 == Graphics algorithms
 
-Perspective matrix for horizontal fov $f in (0, pi)$, aspect ratio $a = w/h$, near plane $n$ (assuming x is right, y is up,
+Perspective matrix for horizontal fov $f in (0, pi)$, aspect ratio $a = w/h$, near plane $n > 0$ (assuming x is right, y is up,
 z is forward) is given by
 
-$ mat(1 / tan(f slash 2), 0, 0, 0; 0, a / ( tan(f slash 2)), 0, 0; 0, 0, 0, n; 0, 0, 1, 0) $ describing the function
+$ mat(1 / tan(f slash 2), 0, 0, 0; 0, a / ( tan(f slash 2)), 0, 0; 0, 0, 0, n; 0, 0, 1, 0) $ describing the function mapping a view space coordinate $(x, y, z, 1)$ to clip space:
 $ (x, y, z, 1) |-> (x / tan(f slash 2), (a y) / ( tan(f slash 2)), n, z) $
 
-According to #link("https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc")[this], in clip space, we clip to $-w <= x <= w, -w <= y <= w, 0 <= z <= w, w > 0$.
+According to #link("https://learn.microsoft.com/en-us/windows/win32/api/d3d11/ns-d3d11-d3d11_rasterizer_desc")[rasterizer desc], in clip space, we clip to $-w <= x <= w, -w <= y <= w, 0 <= z <= w, w > 0$.
 In terms of view-space coordinates, this is equivalent to clipping to
 
 $ -z tan(f slash 2) <= x <= z tan(f slash 2) $
 $ -(z tan(f slash 2)) / a <= y <= (z tan(f slash 2)) / a $
 $ 0 <= n <= z $
-$ z > 0 $
+$ z > 0 "(although this is already implied since n > 0)" $
+
+Why can we clip in clip space? Because clipping is finding intersections with clipping planes using lines in clip space which correspond to lines in view space: let $p, q$ be two points in view space (padded with 1), and let $t$ make 
+$(1-t)(P p) + t (P q)$ satisfy the the clip space inequalities. This is equal to $P((1-t)p + t q)$ where $(1-t)p + t q$ is a point in view space satisfying the view space inequalities.
+// $ P^(-1) ((1-t)(P p) + t (P q)) = (1-t) p + t q $
 
 Depth clip simply disables view $0 <= n <= z$, but $z > 0$ is still enforced. Note that if depth clip is disabled, then depth is *clamped to the viewport* before any depth testing takes place (see #link("https://learn.microsoft.com/en-us/windows/win32/direct3d11/d3d10-graphics-programming-guide-output-merger-stage")[docs]).
 
@@ -67,3 +71,5 @@ To compute the number of additional pixels needed to ensure proper screen edge r
 == Deferred rendering
 
 you should store the final color instead of uvs so that the correct mip level is selected.
+
+casting and conversion: https://learn.microsoft.com/en-us/windows/win32/direct3d9/casting-and-conversion

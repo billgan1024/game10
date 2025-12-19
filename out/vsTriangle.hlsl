@@ -9,19 +9,19 @@
 #endif
 
 
-#line 4313 "core.meta.slang"
+#line 4480 "core.meta.slang"
 cbuffer entryPointParams_model_0 : register(b0)
 {
     float4x4 entryPointParams_model_0;
 }
 
-#line 4313
+#line 4480
 cbuffer entryPointParams_view_0 : register(b1)
 {
     float4x4 entryPointParams_view_0;
 }
 
-#line 4313
+#line 4480
 cbuffer entryPointParams_proj_0 : register(b2)
 {
     float4x4 entryPointParams_proj_0;

@@ -41,7 +41,7 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
    {
       case WM_MOUSEWHEEL:
          cam.speed *= pow(2, float(GET_WHEEL_DELTA_WPARAM(wp)) / WHEEL_DELTA);
-         break;
+         return 0;
       case WM_KEYDOWN:
          if (!(lp >> 30 & 1)) // not repeated
          {
@@ -57,18 +57,18 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
                   break;
             }
          }
-         break;
+         return 0;
 
       case WM_KEYUP:
       {
          u8 key = wp;
          keyDown[key] = false;
       }
-      break;
+         return 0;
 
       case WM_DESTROY:
          ExitProcess(0);
-         break;
+         return 0;
 
       case WM_INPUT:
       {
@@ -81,7 +81,7 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
          cam.pitch = clamp(cam.pitch + raw.data.mouse.lLastY * cam.sens, -pi / 2, pi / 2);
          cam.yaw = fmod(cam.yaw + raw.data.mouse.lLastX * cam.sens, 2 * pi);
       }
-      break;
+         return 0;
 
          // case WM_SETCURSOR: // https://learn.microsoft.com/en-us/windows/win32/menurc/wm-setcursor
          // if (LOWORD(lp) == HTCLIENT)
@@ -96,8 +96,6 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
       default:
          return DefWindowProc(hwnd, msg, wp, lp);
    }
-
-   return 0;
 }
 
 int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
@@ -590,7 +588,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
       // if (keyDown['D']) cam.pos += camRight * cam.speed * dt;
 
       float aspect = windowSize[0] / windowSize[1];
-      view = affine(transpose(viewToWorldRotation), vec3{0, 0, 0}) * affine(id<3>(), -cam.pos);
+      view = affine(transpose(viewToWorldRotation), {0, 0, 0}) * affine(id<3>(), -cam.pos);
       proj = {
          1 / tan(cam.fov / 2), 0, 0, 0,
          0, aspect / tan(cam.fov / 2), 0, 0,
@@ -677,7 +675,7 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
                                              // function z |-> near/z)
       setRenderTargets({texWindow}, depthWindow);
       setViewports({viewport(windowSize[0], windowSize[1])});
-      setDepthState(dsGreater);
+      setDepthState(dsGreater); // if depth is greater then write
       setRasterState(rsFill);
 
       setVertexShader(vsTriplanar);
