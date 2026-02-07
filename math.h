@@ -55,26 +55,26 @@ vec<N> operator-(vec<N> v, vec<N> w)
 }
 
 template <int N>
-vec<N> operator*(vec<N> v, float factor)
+vec<N> operator*(vec<N> v, float c)
 {
    vec<N> res;
-   range (i, N) res[i] = v[i] * factor;
+   range (i, N) res[i] = v[i] * c;
    return res;
 }
 
 template <int N>
-vec<N> operator*(float factor, vec<N> v)
+vec<N> operator*(float c, vec<N> v)
 {
    vec<N> res;
-   range (i, N) res[i] = factor * v[i];
+   range (i, N) res[i] = c * v[i];
    return res;
 }
 
 template <int N>
-vec<N> operator/(vec<N> v, float factor)
+vec<N> operator/(vec<N> v, float c)
 {
    vec<N> res;
-   range (i, N) res[i] = v[i] / factor;
+   range (i, N) res[i] = v[i] / c;
    return res;
 }
 
@@ -108,6 +108,7 @@ using vec2 = vec<2>;
 using vec3 = vec<3>;
 using vec4 = vec<4>;
 
+// https://realtimecollisiondetection.net/blog/?p=89
 bool eq(float x, float y)
 {
    return abs(x - y) <= max(0.0001f, 0.0001f * max(abs(x), abs(y)));
@@ -180,12 +181,12 @@ mat<N, P> operator*(mat<N, M> A, mat<M, P> B)
 }
 
 template <int N, int M>
-mat<N, M> operator/(mat<N, M> A, float factor)
+mat<N, M> operator/(mat<N, M> A, float c)
 {
    mat<N, M> res;
    range (i, N)
       range (j, M)
-         res[i][j] = A[i][j] / factor;
+         res[i][j] = A[i][j] / c;
    return res;
 }
 

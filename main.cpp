@@ -98,8 +98,8 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
    }
 }
 
-int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
-// int main()
+// int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
+int main()
 {
 
    println("hello world");
@@ -393,7 +393,11 @@ int WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 
    // cb<mat4[4]> test;
 
+   println("{}", vec3{0, 0, 1} == vec3{0, 0, 1.0001});
+   println("{}", eq(1, 1.00009));
+
    mat3 shadowToWorldRotation = euler(-pi / 6, pi / 3, 0);
+   // light = {0, 0, 0};
    light = -shadowToWorldRotation * vec3{0, 0, 1};
 
    print("hello world");
