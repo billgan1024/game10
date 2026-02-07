@@ -102,7 +102,6 @@ i64 callback(HWND hwnd, u32 msg, u64 wp, i64 lp)
 int main()
 {
 
-   println("hello world");
    auto audioThread = thread(audioLoop);
 
 #pragma region setup

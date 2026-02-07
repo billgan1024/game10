@@ -25,16 +25,21 @@ main.cpp)
 
 set(slang ${slang_SOURCE_DIR}/bin/slangc.exe)
 file(READ shaders.hlsl shaders)
-string(REGEX MATCHALL "[vp]s[a-zA-Z]+" matches ${shaders})
+# https://stackoverflow.com/questions/72098319/cmake-string-replace-removes-semi-colon
+string(REGEX REPLACE "(vec[234]) ([a-zA-Z][a-zA-Z0-9]+)([,)])" "\\1 \\2 : \\2\\3" shaders "${shaders}")
+file(WRITE out/shaders.hlsl "${shaders}")
+file(COPY_FILE shared.h out/shared.h)
+
+string(REGEX MATCHALL "[vp]s[a-zA-Z]+" matches "${shaders}")
 
 # use slang because fxc doesn't accept ConstantBuffer syntax
 
 foreach(match ${matches})
    string(SUBSTRING ${match} 0 2 stage)
    add_custom_command(TARGET game POST_BUILD
-      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 shaders.hlsl -entry ${match} -o out/${match}.hlsl
-      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 shaders.hlsl -entry ${match} -o out/${match}.dxbc 
-      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 shaders.hlsl -entry ${match} -o out/${match}.dxbc-asm
+      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 out/shaders.hlsl -entry ${match} -o out/${match}.hlsl
+      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 out/shaders.hlsl -entry ${match} -o out/${match}.dxbc 
+      COMMAND ${slang} -matrix-layout-row-major -profile ${stage}_5_0 out/shaders.hlsl -entry ${match} -o out/${match}.dxbc-asm
       WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
    )
 endforeach()

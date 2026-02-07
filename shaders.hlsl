@@ -29,7 +29,7 @@ mat3 operator*(mat3 a, mat3 b)
 
 void vsTriangle(uint id: SV_VertexID,
                 cb<mat4> model, cb<mat4> view, cb<mat4> proj,
-                out vec4 svp: SV_Position, out vec3 color: color)
+                out vec4 svp: SV_Position, out vec3 color)
 {
    vec2 points[] = {
       { 0, 0.5 },
@@ -46,7 +46,7 @@ void vsTriangle(uint id: SV_VertexID,
 }
 
 void psTriangle(vec4 svp: SV_Position,
-                vec3 color: color,
+                vec3 color,
                 out vec3 target: SV_Target)
 {
    target = color;
@@ -80,7 +80,7 @@ mat3 inverse(mat3 m)
 void vsMain(uint id: SV_VertexID,
             sb<vec3> points, sb<vec3> normals, sb<vec2> uvs,
             cb<mat4> model, cb<mat4> view, cb<mat4> proj,
-            out vec4 svp: SV_Position, out vec3 normal: normal, out vec2 uv: uv, out vec3 pos: pos)
+            out vec4 svp: SV_Position, out vec3 normal, out vec2 uv, out vec3 pos)
 {
    svp = proj * view * model * vec4(points[id], 1);
    normal = normalize(inverse(transpose(mat3(model))) * normals[id]);
@@ -91,7 +91,7 @@ void vsMain(uint id: SV_VertexID,
 void vsTriplanar(uint id: SV_VertexID,
                  sb<vec3> points, sb<vec3> normals,
                  cb<mat4> model, cb<mat4> view, cb<mat4> proj,
-                 out vec4 svp: SV_Position, out vec3 normal: normal, out vec2 uv: uv, out vec3 pos: pos)
+                 out vec4 svp: SV_Position, out vec3 normal, out vec2 uv, out vec3 pos)
 {
 
    svp = proj * view * model * vec4(points[id], 1);
@@ -108,7 +108,7 @@ void vsTriplanar(uint id: SV_VertexID,
    pos = (model * vec4(points[id], 1)).xyz;
 }
 
-void psMain(vec4 svp: SV_Position, vec3 normal: normal, vec2 uv: uv,
+void psMain(vec4 svp: SV_Position, vec3 normal, vec2 uv,
             Texture2D diffuse, SamplerState sampler,
             cb<vec3> light,
             out vec4 target: SV_Target)
@@ -134,7 +134,7 @@ bool inVolume(vec3 ndc)
 
 // recall that svp.z is the depth value but not clamped to the viewport (that's not important though since we have depthclipenable on)
 // use this to reconstruct world position
-void psShadow(vec4 svp: SV_Position, vec3 normal: normal, vec2 uv: uv, vec3 pos: pos,
+void psShadow(vec4 svp: SV_Position, vec3 normal, vec2 uv, vec3 pos,
               Texture2D diffuse, Texture2D<float> shadow[4],
               SamplerState sampler, SamplerComparisonState cmp,
               cb<vec3> light, cb<mat4> cascade0, cb<mat4> cascade1, cb<mat4> cascade2, cb<mat4> cascade3,
